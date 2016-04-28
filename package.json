@@ -1,0 +1,19 @@
+{
+  "name": "legion-io",
+  "version": "0.0.1",
+  "description": "Chainable sequences of actions with user state",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "eslint ./src/** ./spec/** && jasmine && istanbul cover jasmine",
+    "clean": "rimraf node_modules coverage"
+  },
+  "author": "Christopher Lane Hinson <lane@webperformance.com>",
+  "license": "APSL-2.0",
+  "dependencies": {},
+  "devDependencies": {
+    "eslint": "^1.10.3",
+    "istanbul": "^0.4.2",
+    "jasmine": "^2.4.1",
+    "rimraf": "^2.5.2"
+  }
+}
