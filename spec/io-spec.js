@@ -70,14 +70,11 @@ describe('The Io object', function() {
     });
   });
 
-  it('can get an embedded state in fluent style', function(done) {
-    var side_effect = false;
-
+  it('can not get an embedded state in a problematic fluent style', function(done) {
     Io.of()
-      .chain(function() { side_effect = true; })
+      .chain(function() { done.fail('this is the thing we don\'t want to happen'); } )
       .get().chain(function(x) { return Promise.resolve(x*2); })
       .run(7).then(function(result) {
-        expect(side_effect).toBe(true);
         expect(result).toBe(14);
         done();
       }, function(err) {
@@ -85,12 +82,9 @@ describe('The Io object', function() {
       });
   });
 
-  it('can insert a working value, using of(), even in fluent style', function(done) {
-    var side_effect = false;
-
-    Io.of().chain(function() { side_effect = true; })
+  it('can not insert a working value, using of(), in a problematic fluent style', function(done) {
+    Io.of().chain(function() { done.fail('this is the thing we don\'t want to happen'); })
       .of(5).chain(function(x) {
-        expect(side_effect).toBe(true);
         expect(x).toBe(5);
         done();
       }).run().catch(function(err) {

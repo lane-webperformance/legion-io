@@ -42,14 +42,12 @@ Reference
 Answers true if the parameter is an Io.
 
 ### Io.of(value)
-### Io.prototype.of(value)
 
 An Io that simply returns the given value. In this case, 'returns' means that
 the value will be passed into the next Io in the chain, or returned by the
 run() method.
 
 ### Io.get()
-### Io.prototype.get()
 
 An Io that simply returns the carried state. This state is either the value
 that was passed into the run() method, or a local value from a caller's
@@ -82,5 +80,11 @@ section. This modification is then dropped at the end of the critical section.
 
 * modification: a function to return a modified copy of the carried state.
 * action: a critical section, which may be any value that is valid for
-to Io.chain().
+Io.chain().
+
+### IO.prototype.run(state)
+
+Begin execution of an Io. The result will always be a promise, which in turn
+should contain the result of the last step in the chain.
+
 

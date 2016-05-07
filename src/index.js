@@ -8,9 +8,6 @@ function isIo(value) {
 }
 
 Io.of = function(value) {
-  if( isIo(this) )
-    return this.chain(Io.of(value));
-
   return Object.assign(Object.create(Io), {
     _action : function() {
       return Promise.resolve(value);
@@ -19,9 +16,6 @@ Io.of = function(value) {
 };
 
 Io.get = function() {
-  if( isIo(this) )
-    return this.chain(Io.get());
-
   return Object.assign(Object.create(Io), {
     _action : function(state) {
       return Promise.resolve(state);
