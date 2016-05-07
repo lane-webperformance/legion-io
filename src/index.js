@@ -77,4 +77,5 @@ module.exports.of = Io.of;
 module.exports.get = Io.get;
 module.exports.local = Io.local;
 module.exports.isIo = isIo;
+module.exports.prototype = Io;
 
