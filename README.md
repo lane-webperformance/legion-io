@@ -1,4 +1,7 @@
 
+[![Build Status](https://travis-ci.org/lane-webperformance/legion-io.svg?branch=master)](https://travis-ci.org/lane-webperformance/legion-io)
+[![Dependency Status](https://gemnasium.com/badges/github.com/lane-webperformance/legion-io.svg)](https://gemnasium.com/github.com/lane-webperformance/legion-io)
+
 An Io is a
 [fantasyland](https://github.com/fantasyland/fantasy-land) monad carrying an
 internal state and bound via promises. In common parlance, that means you

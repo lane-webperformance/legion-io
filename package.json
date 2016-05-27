@@ -9,9 +9,11 @@
   },
   "author": "Christopher Lane Hinson <lane@webperformance.com>",
   "license": "APSL-2.0",
-  "dependencies": {},
+  "dependencies": {
+    "eslint": "^2.11.0"
+  },
   "devDependencies": {
-    "eslint": "^1.10.3",
+    "eslint": "*",
     "istanbul": "^0.4.2",
     "jasmine": "^2.4.1",
     "rimraf": "^2.5.2"
