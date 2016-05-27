@@ -1,6 +1,6 @@
 {
   "name": "legion-io",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Chainable sequences of actions with user state",
   "main": "src/index.js",
   "scripts": {
@@ -9,8 +9,7 @@
   },
   "author": "Christopher Lane Hinson <lane@webperformance.com>",
   "license": "APSL-2.0",
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "eslint": "^2.11.0",
     "istanbul": "^0.4.2",
