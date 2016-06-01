@@ -1,10 +1,11 @@
 
 var Io = {
-  _action : function() { throw Error('Io undefined action.'); }
+  _action : function() { throw Error('Io undefined action.'); },
+  _type : 'legion-io/Io'
 };
 
 function isIo(value) {
-  return typeof value === 'object' && Object.getPrototypeOf(value) === Io;
+  return typeof value === 'object' && Object.getPrototypeOf(value)._type === Io._type;
 }
 
 Io.of = function(value) {
