@@ -16,6 +16,13 @@ Io.of = function(value) {
   });
 };
 
+Io.resolve = function(value) {
+  if( isIo(value) )
+    return value;
+
+  return Io.of(value);
+};
+
 Io.get = function() {
   return Object.assign(Object.create(Io), {
     _action : function(state) {
@@ -26,7 +33,7 @@ Io.get = function() {
 
 Io.map = function(f) {
   return this.chain(function(v) {
-    return Promise.resolve(f(v));
+    return Io.of(f(v));
   });
 };
 
@@ -35,16 +42,25 @@ Io.ap = function(v) {
 };
 
 Io.chain = function(f) {
-  var previous_io = this;
+  const functionize = function(input) {
+    if( typeof input === 'function' )
+      return (_state, value) => input(value);
 
-  return Object.assign(Object.create(Io), {
-    _action : function(state) {
-      return previous_io.run(state).then(function(result) {
-        result = typeof f === 'function' ? f.call(state,result) : f;
-        if( isIo(result) )
-          result = result.run(state);
-        return Promise.resolve(result);
-      });
+    if( isIo(input) )
+      return (state, _value) => input.run(state);
+
+    throw Error('Inputs to Io.chain() must be functions or Ios.');
+  };
+
+  f = functionize(f);
+
+  return Object.assign(Object.create(Io), this, {
+    _action : state => {
+      return Promise.resolve()
+                 .then(() => this.run(state))
+                 .then(value => f.call(undefined, state, value))
+                 .then(Io.resolve)
+                 .then(io => io.run(state));
     }
   });
 };
@@ -69,6 +85,7 @@ Io.run = function(state) {
 };
 
 module.exports.of = Io.of;
+module.exports.resolve = Io.resolve;
 module.exports.get = Io.get;
 module.exports.local = Io.local;
 module.exports.isIo = isIo;

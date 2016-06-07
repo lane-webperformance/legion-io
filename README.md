@@ -48,7 +48,7 @@ Answers true if the parameter is an Io.
 
 An Io that simply returns the given value. In this case, 'returns' means that
 the value will be passed into the next Io in the chain, or returned by the
-run() method.
+run() method if there are no more chains.
 
 ### Io.get()
 
@@ -90,4 +90,8 @@ Io.chain().
 Begin execution of an Io. The result will always be a promise, which in turn
 should contain the result of the last step in the chain.
 
+### Io.resolve(value)
 
+Analogous to Promise.resolve(), but wrapping a value in an Io if it is not
+already wrapped in an Io. (Io.of() cannot do this, because it must be possible
+to wrap an Io in another Io.) You usually shouldn't need this.
