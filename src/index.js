@@ -1,5 +1,6 @@
+'use strict';
 
-var Io = {
+const Io = {
   _action : function() { throw Error('Io undefined action.'); },
   _type : 'legion-io/Io'
 };
@@ -70,7 +71,7 @@ Io.local = function(modification, action) {
     return this.chain(Io.local(modification, action));
 
   return Io.get().chain(function(state) {
-    var local_state = modification(state);
+    const local_state = modification(state);
 
     return Io.of().chain(action).run(local_state);
   });
