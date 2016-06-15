@@ -89,6 +89,18 @@ describe('The Io object', function() {
       }).run().catch(done.fail);
   });
 
+  it('can catch a failure condition, using catch()', function(done) {
+    Io.of().chain(() => {
+      throw 'intentional failure';
+    }).chain(() => {
+      done.fail('unexpected success');
+    }).catch(x => {
+      expect(x).toBe('intentional failure');
+    }).chain(() => {
+      done();
+    }).run();
+  });
+
   it('can be executed multiple times with different outcomes', function(done) {
     const io = Io.get().chain(function(x) {
       return x.toUpperCase();
