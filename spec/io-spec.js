@@ -101,6 +101,16 @@ describe('The Io object', function() {
     }).run();
   });
 
+  it('can not catch successful results, using catch()', function(done) {
+    Io.of().chain(() => {
+      return 'success';
+    }).catch(x => {
+      done.fail('saw: ' + x);
+    }).chain(() => {
+      done();
+    }).run();
+  });
+
   it('can be executed multiple times with different outcomes', function(done) {
     const io = Io.get().chain(function(x) {
       return x.toUpperCase();

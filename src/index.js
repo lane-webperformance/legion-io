@@ -66,20 +66,14 @@ Io.chain = function(f) {
   });
 };
 
-// Implementation detail of Io.catch()
-// Equivalent to Io.catch(x => x)
-Io._catch = function() {
+Io.catch = function(f) {
   return Object.assign(Object.create(Io), this, {
     _action : state => {
       return Promise.resolve()
                .then(() => this.run(state))
-               .catch(x => x);
+               .catch(x => Io.of(x).chain(f).run(state));
     }
   });
-};
-
-Io.catch = function(f) {
-  return this._catch().chain(f);
 };
 
 Io.local = function(modification, action) {
