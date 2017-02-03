@@ -1,6 +1,6 @@
 {
   "name": "legion-io",
-  "version": "0.0.8",
+  "version": "0.0.12",
   "description": "Chainable sequences of actions with user state",
   "main": "src/index.js",
   "scripts": {
@@ -11,9 +11,9 @@
   "license": "APSL-2.0",
   "dependencies": {},
   "devDependencies": {
-    "eslint": "^2.11.0",
-    "istanbul": "^0.4.2",
-    "jasmine": "^2.4.1",
-    "rimraf": "^2.5.2"
+    "eslint": "^3.14.1",
+    "istanbul": "^0.4.5",
+    "jasmine": "^2.5.3",
+    "rimraf": "^2.5.4"
   }
 }
