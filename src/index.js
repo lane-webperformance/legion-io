@@ -1,5 +1,7 @@
 'use strict';
 
+const R = require('ramda');
+
 const Io = {
   _action : function() { throw Error('Io undefined action.'); },
   _type : 'legion-io/Io'
@@ -9,32 +11,34 @@ function isIo(value) {
   return typeof value === 'object' && Object.getPrototypeOf(value)._type === Io._type;
 }
 
-Io.of = function(value) {
+function of(value) {
   return Object.assign(Object.create(Io), {
     _action : function() {
       return Promise.resolve(value);
     }
   });
-};
+}
 
-Io.resolve = function(value) {
+function resolve(value) {
   if( isIo(value) )
     return value;
 
-  return Io.of(value);
-};
+  return of(value);
+}
 
-Io.get = function() {
+function get(path) {
+  path = R.lensPath(path || []);
+
   return Object.assign(Object.create(Io), {
     _action : function(state) {
-      return Promise.resolve(state);
+      return Promise.resolve(state).then(s => R.view(path,s));
     }
   });
-};
+}
 
 Io.map = function(f) {
   return this.chain(function(v) {
-    return Io.of(f(v));
+    return of(f(v));
   });
 };
 
@@ -60,7 +64,7 @@ Io.chain = function(f) {
       return Promise.resolve()
                  .then(() => this.run(state))
                  .then(value => f.call(undefined, state, value))
-                 .then(Io.resolve)
+                 .then(resolve)
                  .then(io => io.run(state));
     }
   });
@@ -71,19 +75,28 @@ Io.catch = function(f) {
     _action : state => {
       return Promise.resolve()
                .then(() => this.run(state))
-               .catch(x => Io.of(x).chain(f).run(state));
+               .catch(x => of(x).chain(f).run(state));
     }
   });
 };
 
 Io.local = function(modification, action) {
   if( isIo(this) )
-    return this.chain(Io.local(modification, action));
+    return this.chain(Io.local(modification,action));
 
-  return Io.get().chain(function(state) {
-    const local_state = modification(state);
+  return Io.localPath([], modification, action);
+};
 
-    return Io.of().chain(action).run(local_state);
+Io.localPath = function(path, modification, action) {
+  if( isIo(this) )
+    return this.chain(Io.localPath(path, modification, action));
+
+  path = R.lensPath(path);
+
+  return get().chain(function(state) {
+    const local_state = R.over(path, modification, state);
+
+    return of().chain(action).run(local_state);
   });
 };
 
@@ -95,10 +108,11 @@ Io.run = function(state) {
   return this._action.call(undefined, state);
 };
 
-module.exports.of = Io.of;
-module.exports.resolve = Io.resolve;
-module.exports.get = Io.get;
+module.exports.of = of;
+module.exports.resolve = resolve;
+module.exports.get = get;
 module.exports.local = Io.local;
+module.exports.localPath = Io.localPath;
 module.exports.isIo = isIo;
 module.exports.prototype = Io;
 

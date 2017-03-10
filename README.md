@@ -85,6 +85,15 @@ section. This modification is then dropped at the end of the critical section.
 * action: a critical section, which may be any value that is valid for
 Io.chain().
 
+### Io.prototype.localPath(path, modification, action)
+
+Make a local modification to the carried state for the duration of a critical
+section. This modification is then dropped at the end of the critical section.
+
+* path: a path into the state, for example, ['services','metrics']
+* modification: a function to return a modified copy of the fragment of carried state at the specified path
+* action: a critical section, which may be any value that is valid for Io.chain()
+
 ### IO.prototype.run(state)
 
 Begin execution of an Io. The result will always be a promise, which in turn

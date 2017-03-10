@@ -71,24 +71,6 @@ describe('The Io object', function() {
     }, done.fail);
   });
 
-  it('can not get an embedded state in a problematic fluent style', function(done) {
-    Io.of()
-      .chain(function() { done.fail('this is the thing we don\'t want to happen'); } )
-      .get().chain(function(x) { return Promise.resolve(x*2); })
-      .run(7).then(function(result) {
-        expect(result).toBe(14);
-        done();
-      }, done.fail);
-  });
-
-  it('can not insert a working value, using of(), in a problematic fluent style', function(done) {
-    Io.of().chain(function() { done.fail('this is the thing we don\'t want to happen'); })
-      .of(5).chain(function(x) {
-        expect(x).toBe(5);
-        done();
-      }).run().catch(done.fail);
-  });
-
   it('can catch a failure condition, using catch()', function(done) {
     Io.of().chain(() => {
       throw 'intentional failure';
@@ -145,6 +127,16 @@ describe('The Io object', function() {
         expect(side_effect).toBe(true);
         done();
       }, done.fail);
+  });
+
+  it('supports local modification to a path into the embedded state', function(done) {
+    Io.localPath(['foo','bar'], x => x+100, Io.get().chain(o => {
+      expect(o.foo.bar).toBe(404);
+    }).chain(Io.get(['foo','bar'])).chain(x => {
+      expect(x).toBe(404);
+    })).run({foo:{bar:304}})
+      .then(done)
+      .catch(done.fail);
   });
 
   it('can be unwrapped to get a function that takes the embedded state and returns a promise', function(done) {
