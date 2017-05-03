@@ -93,11 +93,8 @@ Io.localPath = function(path, modification, action) {
 
   path = R.lensPath(path);
 
-  return get().chain(function(state) {
-    const local_state = R.over(path, modification, state);
-
-    return of().chain(action).run(local_state);
-  });
+  return get().chain(state => of(R.over(path, modification, state)))
+              .chain(local_state => of().chain(action).run(local_state));
 };
 
 Io.unwrap = function() {
