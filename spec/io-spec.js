@@ -147,4 +147,13 @@ describe('The Io object', function() {
       done();
     }, done.fail);
   });
+
+  it('supports parallel execution', function(done) {
+    const foo = x => Io.get().chain(y => x + y);
+
+    Io.all([foo(1),foo(2),foo(3)]).run(7).then(result => {
+      expect(result[0]).toBe(8);
+      expect(result).toEqual([8,9,10]);
+    }).then(done).catch(done.fail);
+  });
 });

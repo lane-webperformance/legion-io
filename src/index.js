@@ -36,6 +36,17 @@ function get(path) {
   });
 }
 
+function all(things) {
+  return get().chain(state => {
+    const promises = [];
+
+    for( let i = 0; i < things.length; i++ )
+      promises.push(things[i].run(state));
+
+    return of(Promise.all(promises));
+  });
+}
+
 Io.map = function(f) {
   return this.chain(function(v) {
     return of(f(v));
@@ -105,11 +116,11 @@ Io.run = function(state) {
   return this._action.call(undefined, state);
 };
 
-module.exports.of = of;
-module.exports.resolve = resolve;
+module.exports.all = all;
 module.exports.get = get;
+module.exports.isIo = isIo;
 module.exports.local = Io.local;
 module.exports.localPath = Io.localPath;
-module.exports.isIo = isIo;
+module.exports.of = of;
 module.exports.prototype = Io;
-
+module.exports.resolve = resolve;

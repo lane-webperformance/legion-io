@@ -3,9 +3,8 @@
 const Io = require('../src/index');
 
 // Io supports a few different ways to return from a function.
-// This test randomly varies between them 1,000,000 times in an error
-// to trip up the evaluator. Because we can. And we should.
-
+// This test randomly varies between them 10,000 times in an effort
+// to trip up the evaluator. Because we can.
 describe('The Io evaluator', function() {
   it('can successfully chain a random sequence of 10,000 calls', function(done) {
     const subtractOne = function(x) {
