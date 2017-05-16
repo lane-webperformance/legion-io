@@ -36,14 +36,27 @@ function get(path) {
   });
 }
 
-function all(things) {
+function parallel(things) {
   return get().chain(state => {
     const promises = [];
+    const results = Array.isArray(things) ? [] : {};
 
-    for( let i = 0; i < things.length; i++ )
-      promises.push(things[i].run(state));
+    for( const key in things )
+      promises.push(things[key].run(state).then(value => { results[key] = value; }));
 
-    return of(Promise.all(promises));
+    return of(Promise.all(promises).then(() => results));
+  });
+}
+
+function sequence(things) {
+  return get().chain(state => {
+    const results = Array.isArray(things) ? [] : {};
+    let promise = Promise.resolve();
+
+    for( const key in things )
+      promise = promise.then(() => things[key].run(state).then(value => { results[key] = value; }));
+
+    return of(promise.then(() => results));
   });
 }
 
@@ -116,7 +129,8 @@ Io.run = function(state) {
   return this._action.call(undefined, state);
 };
 
-module.exports.all = all;
+module.exports.parallel = parallel;
+module.exports.sequence = sequence;
 module.exports.get = get;
 module.exports.isIo = isIo;
 module.exports.local = Io.local;

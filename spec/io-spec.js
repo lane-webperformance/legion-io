@@ -151,9 +151,52 @@ describe('The Io object', function() {
   it('supports parallel execution', function(done) {
     const foo = x => Io.get().chain(y => x + y);
 
-    Io.all([foo(1),foo(2),foo(3)]).run(7).then(result => {
+    Io.parallel([foo(1),foo(2),foo(3)]).run(7).then(result => {
       expect(result[0]).toBe(8);
       expect(result).toEqual([8,9,10]);
+      expect(Array.isArray(result)).toBe(true);
     }).then(done).catch(done.fail);
   });
+
+  it('supports parallel execution with named threads', function(done) {
+    const foo = x => Io.get().chain(y => x + y);
+
+    Io.parallel({foo:foo(5),bar:foo(0),baz:foo(1)}).run(2).then(result => {
+      expect(result.foo).toBe(7);
+      expect(result.bar).toBe(2);
+      expect(result.baz).toBe(3);
+      expect(Array.isArray(result)).toBe(false);
+    }).then(done).catch(done.fail);
+  });
+
+  it('supports sequential execution', function(done) {
+    let count = 0;
+    const foo = (x) => Io.of().chain(() => {
+      expect(count).toBe(x);
+      count++;
+      return count;
+    });
+
+    Io.sequence([foo(0),foo(1),foo(2),foo(3)]).run(2).then(result => {
+      expect(result).toEqual([1,2,3,4]);
+      expect(count).toBe(4);
+      expect(Array.isArray(result)).toBe(true);
+    }).then(done).catch(done.fail);
+  });
+
+  it('supports sequential execution with named threads', function(done) {
+    let count = 0;
+    const foo = (x) => Io.of().chain(() => {
+      expect(count).toBe(x);
+      count++;
+      return count;
+    });
+
+    Io.sequence([foo(0),foo(1),foo(2),foo(3)]).run(2).then(result => {
+      expect(result).toEqual([1,2,3,4]);
+      expect(count).toBe(4);
+      expect(Array.isArray(result)).toBe(true);
+    }).then(done).catch(done.fail);
+  });
+
 });
