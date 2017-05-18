@@ -129,16 +129,6 @@ describe('The Io object', function() {
       }, done.fail);
   });
 
-  it('supports local modification to a path into the embedded state', function(done) {
-    Io.localPath(['foo','bar'], x => x+100, Io.get().chain(o => {
-      expect(o.foo.bar).toBe(404);
-    }).chain(Io.get(['foo','bar'])).chain(x => {
-      expect(x).toBe(404);
-    })).run({foo:{bar:304}})
-      .then(done)
-      .catch(done.fail);
-  });
-
   it('can be unwrapped to get a function that takes the embedded state and returns a promise', function(done) {
     const action = Io.of(5).chain(function(x) { return Io.get().chain(function(y) { return x+y; }); });
 

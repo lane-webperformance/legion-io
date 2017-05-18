@@ -1,7 +1,5 @@
 'use strict';
 
-const R = require('ramda');
-
 const Io = {
   _action : function() { throw Error('Io undefined action.'); },
   _type : 'legion-io/Io'
@@ -26,12 +24,10 @@ function resolve(value) {
   return of(value);
 }
 
-function get(path) {
-  path = R.lensPath(path || []);
-
+function get() {
   return Object.assign(Object.create(Io), {
     _action : function(state) {
-      return Promise.resolve(state).then(s => R.view(path,s));
+      return Promise.resolve(state);
     }
   });
 }
@@ -108,16 +104,7 @@ Io.local = function(modification, action) {
   if( isIo(this) )
     return this.chain(Io.local(modification,action));
 
-  return Io.localPath([], modification, action);
-};
-
-Io.localPath = function(path, modification, action) {
-  if( isIo(this) )
-    return this.chain(Io.localPath(path, modification, action));
-
-  path = R.lensPath(path);
-
-  return get().chain(state => of(R.over(path, modification, state)))
+  return get().chain(modification)
               .chain(local_state => of().chain(action).run(local_state));
 };
 
