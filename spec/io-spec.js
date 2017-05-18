@@ -115,6 +115,16 @@ describe('The Io object', function() {
     }, done.fail);
   });
 
+  it('supports using Ios to implement the local modification function', function(done) {
+    const modification = x => Io.of(x*2);
+    const action = Io.get().chain(function(x) { return x; });
+
+    Io.local(modification, action).run(3).then(function(result) {
+      expect(result).toEqual(6);
+      done();
+    }, done.fail);
+  });
+
   it('supports local modifications to the embedded state, even in fluent style', function(done) {
     let side_effect = false;
 
