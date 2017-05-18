@@ -8,7 +8,7 @@ const Io = {
 };
 
 function isIo(value) {
-  return typeof value === 'object' && Object.getPrototypeOf(value)._type === Io._type;
+  return (typeof value === 'object' || typeof value === 'function') && Object.getPrototypeOf(value)._type === Io._type;
 }
 
 function of(value) {
