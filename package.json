@@ -1,6 +1,6 @@
 {
   "name": "legion-io",
-  "version": "0.0.34",
+  "version": "0.0.35",
   "description": "Chainable sequences of actions with user state",
   "main": "src/index.js",
   "scripts": {
