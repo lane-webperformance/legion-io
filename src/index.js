@@ -6,7 +6,8 @@ const Io = {
 };
 
 function isIo(value) {
-  return (typeof value === 'object' || typeof value === 'function') && Object.getPrototypeOf(value)._type === Io._type;
+  return (typeof value === 'object' && Object.getPrototypeOf(value)._type === Io._type) ||
+         (typeof value === 'function' && value._type === Io._type);
 }
 
 function of(value) {
@@ -68,11 +69,11 @@ Io.ap = function(v) {
 
 Io.chain = function(f) {
   const functionize = function(input) {
-    if( typeof input === 'function' )
-      return (_state, value) => input(value);
-
     if( isIo(input) )
       return (state, _value) => input.run(state);
+
+    if( typeof input === 'function' )
+      return (_state, value) => input(value);
 
     throw Error('Inputs to Io.chain() must be functions or Ios.');
   };

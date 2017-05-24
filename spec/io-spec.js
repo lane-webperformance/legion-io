@@ -53,6 +53,17 @@ describe('The Io object', function() {
     }, done.fail);
   });
 
+  it("can be chained by a function that is also an Io (giving preference to the function's nature as an Io).", function(done) {
+    const action = Object.assign(() => { throw Error("don't call me"); }, Io.prototype, Io.of().chain(() => 'hello, world'));
+
+    expect(typeof action).toBe('function');
+    expect(Io.isIo(action)).toBe(true);
+    
+    Io.get().chain(action).run('goodbye, world').then(result => {
+      expect(result).toBe('hello, world');
+    }).then(done).catch(done.fail);
+  });
+
   it('can get an embedded state', function(done) {
     Io.get().chain(function(x) { return x+2; }).run(5).then(function(result) {
       expect(result).toBe(7);
