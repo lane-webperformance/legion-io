@@ -6,16 +6,14 @@ describe('The Io object', function() {
   it('Can return static values', function(done) {
     Io.of(5).run().then(function(result) {
       expect(result).toBe(5);
-      done();
-    }, done.fail);
+    }).then(done).catch(done.fail);
   });
 
   it('can be applied according to the fantasyland applicative specification', function(done) {
     //TODO read this specification carefully.
     Io.of(function(x) { return x*2; }).ap(Io.of(5)).run().then(function(result) {
       expect(result).toBe(10);
-      done();
-    }, done.fail);
+    }).then(done).catch(done.fail);
   });
 
   it('can be chained according to the fantasyland monad specification', function(done) {
@@ -24,15 +22,13 @@ describe('The Io object', function() {
       return Io.of(x*2);
     }).run().then(function(result) {
       expect(result).toBe(10);
-      done();
-    }, done.fail);
+    }).then(done).catch(done.fail);
   });
 
   it('can be chained by passing in a raw Io', function(done) {
     Io.of(5).chain(Io.of('ten')).run().then(function(result) {
       expect(result).toBe('ten');
-      done();
-    }, done.fail);
+    }).then(done).catch(done.fail);
   });
 
   it('can be chained by a function that returns a value', function(done) {
@@ -40,8 +36,7 @@ describe('The Io object', function() {
       return five+five;
     }).run().then(function(result) {
       expect(result).toBe(10);
-      done();
-    }, done.fail);
+    }).then(done).catch(done.fail);
   });
 
   it('can be chained by a function that returns a promise', function(done) {
@@ -49,8 +44,7 @@ describe('The Io object', function() {
       return Promise.resolve(five+five).then(function(result) { return result*2; });
     }).run(5).then(function(result) {
       expect(result).toBe(20);
-      done();
-    }, done.fail);
+    }).then(done).catch(done.fail);
   });
 
   it("can be chained by a function that is also an Io (giving preference to the function's nature as an Io).", function(done) {
@@ -67,8 +61,7 @@ describe('The Io object', function() {
   it('can get an embedded state', function(done) {
     Io.get().chain(function(x) { return x+2; }).run(5).then(function(result) {
       expect(result).toBe(7);
-      done();
-    }, done.fail);
+    }).then(done).catch(done.fail);
   });
 
   it('can get an embedded state even when nested', function(done) {
@@ -78,8 +71,7 @@ describe('The Io object', function() {
 
     foo(5).chain(foo(6)).run(2).then(function(result) {
       expect(result).toBe(8);
-      done();
-    }, done.fail);
+    }).then(done).catch(done.fail);
   });
 
   it('can catch a failure condition, using catch()', function(done) {
@@ -89,9 +81,8 @@ describe('The Io object', function() {
       done.fail('unexpected success');
     }).catch(x => {
       expect(x).toBe('intentional failure');
-    }).chain(() => {
-      done();
-    }).run();
+    }).run()
+      .then(done).catch(done.fail);
   });
 
   it('can not catch successful results, using catch()', function(done) {
@@ -99,9 +90,7 @@ describe('The Io object', function() {
       return 'success';
     }).catch(x => {
       done.fail('saw: ' + x);
-    }).chain(() => {
-      done();
-    }).run();
+    }).run().then(done).catch(done.fail);
   });
 
   it('can be executed multiple times with different outcomes', function(done) {
@@ -113,8 +102,7 @@ describe('The Io object', function() {
 
     Promise.all(results).then(function(values) {
       expect(values).toEqual(['FOO','BAR','BAZ','QUUX']);
-      done();
-    }, done.fail);
+    }).then(done).catch(done.fail);
   });
 
   it('supports local modifications to the embedded state', function(done) {
@@ -122,8 +110,7 @@ describe('The Io object', function() {
 
     Io.local(function(x) { return x*2; }, action).run(3).then(function(result) {
       expect(result).toEqual(6);
-      done();
-    }, done.fail);
+    }).then(done).catch(done.fail);
   });
 
   it('supports using Ios to implement the local modification function', function(done) {
@@ -132,8 +119,7 @@ describe('The Io object', function() {
 
     Io.local(modification, action).run(3).then(function(result) {
       expect(result).toEqual(6);
-      done();
-    }, done.fail);
+    }).then(done).catch(done.fail);
   });
 
   it('supports local modifications to the embedded state, even in fluent style', function(done) {
@@ -146,8 +132,7 @@ describe('The Io object', function() {
       .then(function(result) {
         expect(result).toEqual(1);
         expect(side_effect).toBe(true);
-        done();
-      }, done.fail);
+      }).then(done).catch(done.fail);
   });
 
   it('can be unwrapped to get a function that takes the embedded state and returns a promise', function(done) {
@@ -155,8 +140,7 @@ describe('The Io object', function() {
 
     action.unwrap()(9).then(function(result) {
       expect(result).toBe(14);
-      done();
-    }, done.fail);
+    }).then(done).catch(done.fail);
   });
 
   it('supports parallel execution', function(done) {
@@ -209,5 +193,4 @@ describe('The Io object', function() {
       expect(Array.isArray(result)).toBe(true);
     }).then(done).catch(done.fail);
   });
-
 });

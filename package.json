@@ -11,8 +11,9 @@
   "license": "APSL-2.0",
   "devDependencies": {
     "eslint": "^3.14.1",
+    "eslint-plugin-promise": "^3.5.0",
     "istanbul": "^0.4.5",
     "jasmine": "^2.5.3",
-    "rimraf": "^2.5.4"
+    "rimraf": "^2.6.2"
   }
 }
