@@ -83,10 +83,10 @@ Io.chain = function(f) {
   return Object.assign(Object.create(Io), this, {
     _action : state => {
       return Promise.resolve()
-                 .then(() => this.run(state))
-                 .then(value => f.call(undefined, state, value))
-                 .then(resolve)
-                 .then(io => io.run(state));
+        .then(() => this.run(state))
+        .then(value => f.call(undefined, state, value))
+        .then(resolve)
+        .then(io => io.run(state));
     }
   });
 };
@@ -95,8 +95,8 @@ Io.catch = function(f) {
   return Object.assign(Object.create(Io), this, {
     _action : state => {
       return Promise.resolve()
-               .then(() => this.run(state))
-               .catch(x => of(x).chain(f).run(state));
+        .then(() => this.run(state))
+        .catch(x => of(x).chain(f).run(state));
     }
   });
 };
@@ -106,7 +106,7 @@ Io.local = function(modification, action) {
     return this.chain(Io.local(modification,action));
 
   return get().chain(modification)
-              .chain(local_state => of().chain(action).run(local_state));
+    .chain(local_state => of().chain(action).run(local_state));
 };
 
 Io.unwrap = function() {
